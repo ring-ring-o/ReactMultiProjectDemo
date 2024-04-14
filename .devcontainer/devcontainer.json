@@ -1,0 +1,37 @@
+{
+   "name": "react multi project sample",
+   "dockerComposeFile":"../docker-compose.devcontainer.yaml",
+   "service": "workspace",
+   "workspaceFolder": "/home/node/workspaces",
+   "shutdownAction": "stopCompose",
+   "customizations": {
+        "vscode": {
+            "extensions": [
+                "biomejs.biome","ms-azuretools.vscode-docker"
+            ],
+            "settings":{
+                "[javascript]": {
+                    "editor.defaultFormatter": "biomejs.biome"
+                },
+                "[javascriptreact]": {
+                    "editor.defaultFormatter": "biomejs.biome"
+                },
+                "[typescript]": {
+                    "editor.defaultFormatter": "biomejs.biome"
+                },
+                "[typescriptreact]": {
+                    "editor.defaultFormatter": "biomejs.biome" 
+                },
+                "[json]": {
+                    "editor.defaultFormatter": "biomejs.biome"
+                },
+                "biome.lspBin": "/usr/local/share/pnpm/biome",
+                "editor.codeActionsOnSave": {
+                    "quickfix.biome": "explicit",
+                    "source.organizeImports.biome": "explicit"
+                }
+            }
+        }
+   },
+   "remoteUser": "node"
+}
