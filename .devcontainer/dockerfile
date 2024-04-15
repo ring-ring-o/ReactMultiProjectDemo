@@ -1,7 +1,6 @@
 FROM node:21-bookworm
-WORKDIR /home/node/workspaces
 
-# ARG USERNAME=vscode
+ARG USERNAME=node
 # ARG USER_ID=1001
 # ARG USER_GID=${USER_ID}
 # ARG NPM_GLOBAL=/usr/local/share/npm-global
@@ -9,23 +8,23 @@ WORKDIR /home/node/workspaces
 #     && useradd -s /bin/bash --uid ${USER_ID} --gid ${USER_GID} -m ${USERNAME}
 
 RUN apt-get update && apt-get install -y sudo\
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-    # && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
-    # && chmod 0440 /etc/sudoers.d/${USERNAME} \
-    # && chown -R vscode /home/vscode \
-    # && chmod -R 774 /home/vscode/
-    
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* \
+&& echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
+&& chmod 0440 /etc/sudoers.d/${USERNAME}   
+
+USER node
+WORKDIR /home/node/workspaces
+
 # pnpmを有効化
 ENV PNPM_HOME="/usr/local/share/pnpm"
+ENV PNPM_CACHE="/usr/local/share/.pnpm-store"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable
+RUN sudo corepack enable \
+    && sudo mkdir -p ${PNPM_HOME} && sudo chown -R $USERNAME ${PNPM_HOME} \
+    && sudo mkdir -p ${PNPM_CACHE} && sudo chown -R $USERNAME ${PNPM_CACHE} \
+    && pnpm config set store-dir /usr/local/share/.pnpm-store
 
-RUN pnpm config set store-dir /usr/local/share/.pnpm-store
-
-# typescriptを導入
-RUN pnpm add -g typescript @types/node ts-node
-
-# biomeを導入
-RUN pnpm add -g @biomejs/biome
-RUN pnpm dlx @biomejs/biome init
+# パッケージを導入
+RUN pnpm add -g typescript @types/node ts-node @biomejs/biome \
+    && pnpm dlx @biomejs/biome init
