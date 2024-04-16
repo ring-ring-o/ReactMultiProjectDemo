@@ -8,10 +8,13 @@ services:
       dockerfile: "./.devcontainer/dockerfile"
     container_name: workspace
     hostname: workspace
-    ports:
-      - "5173:5173"
     volumes:
       - type: bind
         source: ./
         target: /home/node/workspaces/
     command: ["tail", "-f", "/dev/null"]
+    networks:
+      - lib-test-network
+
+networks:
+  lib-test-network:
